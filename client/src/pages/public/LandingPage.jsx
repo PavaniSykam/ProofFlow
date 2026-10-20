@@ -749,13 +749,11 @@ export default function LandingPage() {
 
           {/* Explicit Creator Credit & Separation from Demo Org */}
           <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-            <div>
-              <span className="text-slate-300 font-medium">Developed by Sykam Pavani</span>
-              <span className="mx-2 text-slate-700">•</span>
-              <span>Academic &amp; Placement Project</span>
-            </div>
-            <div className="text-[11px] text-slate-500 text-center sm:text-right">
+            <div className="text-[11px] text-slate-500 text-center sm:text-left order-2 sm:order-1">
               Nexora Technologies Pvt. Ltd. is a fictional demo entity used solely for workflow modeling.
+            </div>
+            <div className="text-slate-400 font-medium text-center sm:text-right order-1 sm:order-2">
+              Developed by Sykam Pavani
             </div>
           </div>
         </div>

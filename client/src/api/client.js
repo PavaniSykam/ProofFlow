@@ -12,7 +12,11 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      if (window.location.pathname !== '/login') {
+      const pathname = window.location.pathname;
+      const isPublicRoute = pathname === '/' || pathname === '/login';
+      const isAuthProbe = error.config?.url?.includes('/auth/me');
+
+      if (!isPublicRoute && !isAuthProbe) {
         window.location.href = '/login';
       }
     }
