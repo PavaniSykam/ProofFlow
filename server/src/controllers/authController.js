@@ -6,7 +6,7 @@ const setAuthCookie = (res, token) => {
   res.cookie('token', token, {
     httpOnly: true,
     secure: isProd,
-    sameSite: isProd ? 'none' : 'lax',
+    sameSite: 'lax',
     maxAge: 8 * 60 * 60 * 1000, // 8 hours
   });
 };
@@ -16,7 +16,7 @@ const clearAuthCookie = (res) => {
   res.cookie('token', '', {
     httpOnly: true,
     secure: isProd,
-    sameSite: isProd ? 'none' : 'lax',
+    sameSite: 'lax',
     expires: new Date(0),
   });
 };
