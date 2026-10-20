@@ -1,3 +1,4 @@
+const dns = require('dns');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const config = require('../config/env');
@@ -19,6 +20,9 @@ async function seed(mongoUriOverride = null) {
 
   const uri = mongoUriOverride || config.mongoUri;
   if (mongoose.connection.readyState === 0) {
+    if (process.env.SEED_DNS_SERVER) {
+      dns.setServers([process.env.SEED_DNS_SERVER]);
+    }
     await mongoose.connect(uri);
   }
 
