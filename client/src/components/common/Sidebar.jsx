@@ -35,7 +35,7 @@ export default function Sidebar() {
             My Workspace
           </div>
           <nav className="space-y-1">
-            <NavLink to="/" end className={navClass}>
+            <NavLink to="/dashboard" end className={navClass}>
               <LayoutDashboard className="w-4 h-4 text-slate-500" />
               <span>Dashboard</span>
             </NavLink>

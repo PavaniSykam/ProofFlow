@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { Lock, Mail, AlertCircle, ArrowRight } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Lock, Mail, AlertCircle, ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { getDashboardRoute } from '../../utils/navigation';
 
 const SEEDED_ACCOUNTS = [
   { role: 'Employee', name: 'Ravi Teja', email: 'ravi.teja@nexora-demo.example' },
@@ -14,7 +15,7 @@ const SEEDED_ACCOUNTS = [
 ];
 
 export default function Login() {
-  const { login } = useAuth();
+  const { login, user: currentUser, logout } = useAuth();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
@@ -29,12 +30,10 @@ export default function Login() {
 
     try {
       const user = await login(email, password);
-      if (user.roles?.includes('admin')) {
-        navigate('/admin/dashboard');
-      } else if (user.roles?.some((r) => ['manager', 'hr', 'finance', 'it', 'procurement', 'department_head'].includes(r))) {
-        navigate('/approver/inbox');
+      if (user.mustChangePassword) {
+        navigate('/change-password');
       } else {
-        navigate('/');
+        navigate(getDashboardRoute(user));
       }
     } catch (err) {
       setError(err.response?.data?.error?.message || 'Login failed. Please check your credentials.');
@@ -104,12 +103,50 @@ export default function Login() {
       {/* Right Login Form */}
       <div className="md:w-7/12 flex items-center justify-center p-6 md:p-12">
         <div className="max-w-md w-full bg-white p-8 rounded-2xl shadow-xl border border-slate-200">
+          <div className="mb-4">
+            <Link
+              to="/"
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-brand-600 transition-colors"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to ProofFlow Overview</span>
+            </Link>
+          </div>
+
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-slate-900">Sign in to your account</h2>
             <p className="text-sm text-slate-500 mt-1">
               Organization: Nexora Technologies Pvt. Ltd.
             </p>
           </div>
+
+          {currentUser && (
+            <div className="mb-6 p-4 bg-indigo-50 border border-indigo-200 rounded-xl">
+              <div className="flex items-center gap-2 text-indigo-900 font-semibold text-xs mb-1">
+                <CheckCircle2 className="w-4 h-4 text-indigo-600" />
+                <span>Active Session Detected</span>
+              </div>
+              <p className="text-xs text-indigo-700 leading-relaxed">
+                You are currently signed in as <strong>{currentUser.name}</strong> ({currentUser.email}).
+              </p>
+              <div className="mt-3 flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => navigate(getDashboardRoute(currentUser))}
+                  className="px-3 py-1.5 text-xs font-semibold bg-brand-600 hover:bg-brand-700 text-white rounded-lg shadow-xs cursor-pointer"
+                >
+                  Go to Dashboard →
+                </button>
+                <button
+                  type="button"
+                  onClick={logout}
+                  className="px-3 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-800 hover:bg-white rounded-lg border border-slate-200 cursor-pointer"
+                >
+                  Sign Out
+                </button>
+              </div>
+            </div>
+          )}
 
           {error && (
             <div className="flex items-center gap-2 p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-lg text-sm mb-4">

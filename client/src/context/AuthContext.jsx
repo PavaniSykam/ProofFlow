@@ -22,8 +22,10 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await getMe();
       setUser(res.data.user);
+      return res.data.user;
     } catch (err) {
       setUser(null);
+      return null;
     } finally {
       setLoading(false);
     }
@@ -37,6 +39,10 @@ export const AuthProvider = ({ children }) => {
     const res = await apiLogin(email, password);
     setUser(res.data.user);
     return res.data.user;
+  };
+
+  const updateUser = (updatedUser) => {
+    setUser(updatedUser);
   };
 
   const logout = async () => {
@@ -65,6 +71,7 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         refreshUser: fetchUser,
+        updateUser,
         hasRole,
         isAdmin,
         isApprover,

@@ -78,6 +78,8 @@ class AuthService {
     user.tokenVersion += 1;
     await user.save();
 
+    await user.populate('departmentId');
+
     const token = this.generateToken(user);
     return { user, token };
   }

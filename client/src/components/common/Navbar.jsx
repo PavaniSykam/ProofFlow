@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { getUnreadNotificationCount, getNotifications, markNotificationRead, markAllNotificationsRead } from '../../api/notifications';
 import { Bell, User, LogOut, KeyRound, Shield, CheckCheck } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { getDashboardRoute } from '../../utils/navigation';
 
 export default function Navbar() {
   const { user, logout, isAdmin } = useAuth();
@@ -67,7 +68,7 @@ export default function Navbar() {
 
   return (
     <header className="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between sticky top-0 z-30 shadow-xs">
-      <div className="flex items-center gap-3">
+      <Link to={getDashboardRoute(user)} className="flex items-center gap-3 hover:opacity-90 transition-opacity">
         <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-brand-700 to-indigo-500 flex items-center justify-center text-white font-bold text-lg shadow-sm">
           PF
         </div>
@@ -77,7 +78,7 @@ export default function Navbar() {
             Nexora Technologies
           </span>
         </div>
-      </div>
+      </Link>
 
       <div className="flex items-center gap-4">
         {/* Notification Bell */}

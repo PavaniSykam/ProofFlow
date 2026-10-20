@@ -7,6 +7,8 @@ import ProtectedRoute from './components/common/ProtectedRoute';
 import Login from './pages/auth/Login';
 import ChangePassword from './pages/auth/ChangePassword';
 
+import LandingPage from './pages/public/LandingPage';
+
 // Employee Pages
 import EmployeeDashboard from './pages/employee/EmployeeDashboard';
 import RequestCatalog from './pages/employee/RequestCatalog';
@@ -37,7 +39,8 @@ import Forbidden from './pages/common/Forbidden';
 export default function App() {
   return (
     <Routes>
-      {/* Public Route */}
+      {/* Public Routes */}
+      <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<Login />} />
 
       {/* Force Change Password Route */}
@@ -52,7 +55,18 @@ export default function App() {
 
       {/* Authenticated Workspace Routes */}
       <Route
-        path="/"
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <EmployeeDashboard />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/employee/dashboard"
         element={
           <ProtectedRoute>
             <Layout>
@@ -252,6 +266,7 @@ export default function App() {
       />
 
       {/* Fallback Aliases */}
+      <Route path="/employee" element={<Navigate to="/dashboard" replace />} />
       <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
       <Route path="/approver" element={<Navigate to="/approver/dashboard" replace />} />
 

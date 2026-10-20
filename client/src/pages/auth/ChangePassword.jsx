@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { changePassword } from '../../api/auth';
 import { useNavigate } from 'react-router-dom';
 import { KeyRound, Check, AlertCircle } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+import { getDashboardRoute } from '../../utils/navigation';
 
 export default function ChangePassword() {
+  const { user, updateUser, refreshUser } = useAuth();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -27,12 +30,21 @@ export default function ChangePassword() {
 
     setLoading(true);
     try {
-      await changePassword(currentPassword, newPassword);
+      const res = await changePassword(currentPassword, newPassword);
+      // Synchronize in-memory auth context with the updated user
+      const updatedUser = res.data?.user || (await refreshUser());
+      if (res.data?.user) {
+        updateUser(res.data.user);
+      }
       setSuccess(true);
-      setTimeout(() => navigate('/'), 1500);
+
+      // Determine the user's role-appropriate dashboard route
+      const destination = getDashboardRoute(updatedUser || user);
+      setTimeout(() => {
+        navigate(destination, { replace: true });
+      }, 1000);
     } catch (err) {
       setError(err.response?.data?.error?.message || 'Password update failed');
-    } finally {
       setLoading(false);
     }
   };
